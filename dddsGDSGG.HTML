@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آلة حاسبة علمية متطورة - كاسيو</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2c3e50;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #1e272e;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.5);
+            width: 380px;
+            border: 2px solid #34495e;
+        }
+
+        .brand {
+            color: #bdc3c7;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        #display {
+            width: 100%;
+            height: 70px;
+            background-color: #dcdde1;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 26px;
+            text-align: left;
+            padding: 10px;
+            box-sizing: border-box;
+            color: #2f3640;
+            font-family: monospace;
+            box-shadow: inset 0px 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            padding: 15px 5px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            background-color: #485460;
+            color: white;
+            transition: all 0.1s ease;
+        }
+
+        button:hover {
+            background-color: #576574;
+        }
+
+        /* أزرار العمليات العلمية */
+        button.sci {
+            background-color: #2f3542;
+            color: #74b9ff;
+            font-size: 13px;
+        }
+        button.sci:hover {
+            background-color: #3e4453;
+        }
+
+        /* أزرار الأرقام */
+        button.num {
+            background-color: #f5f6fa;
+            color: #2f3640;
+            font-size: 18px;
+        }
+        button.num:hover {
+            background-color: #ffffff;
+        }
+
+        /* أزرار التحكم والمسح */
+        button.clear {
+            background-color: #ea2027;
+            color: white;
+        }
+        button.clear:hover {
+            background-color: #ff3f34;
+        }
+
+        button.del {
+            background-color: #ee5253;
+            color: white;
+        }
+
+        /* زر اليساوي والعمليات الأساسية */
+        button.operator {
+            background-color: #ffa502;
+            color: white;
+            font-size: 18px;
+        }
+        button.operator:hover {
+            background-color: #ff793f;
+        }
+
+        button.equal {
+            background-color: #2ed573;
+            color: white;
+            grid-column: span 1;
+            font-size: 20px;
+        }
+        button.equal:hover {
+            background-color: #26af5f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="brand">CASIO STYLE / SCIENTIFIC</div>
+        <input type="text" id="display" readonly placeholder="0">
+
+        <div class="buttons">
+            <button class="sci" onclick="sciOp('sin')">sin</button>
+            <button class="sci" onclick="sciOp('cos')">cos</button>
+            <button class="sci" onclick="sciOp('tan')">tan</button>
+            <button class="sci" onclick="append('Math.PI')">π</button>
+            <button class="sci" onclick="append('Math.E')">e</button>
+
+            <button class="sci" onclick="sciOp('log')">log</button>
+            <button class="sci" onclick="sciOp('ln')">ln</button>
+            <button class="sci" onclick="append('**2')">x²</button>
+            <button class="sci" onclick="append('**')">xʸ</button>
+            <button class="sci" onclick="sciOp('sqrt')">√</button>
+
+            <button class="sci" onclick="append('(')">(</button>
+            <button class="sci" onclick="append(')')">)</button>
+            <button class="sci" onclick="sciOp('fact')">n!</button>
+            <button class="del" onclick="deleteLast()">DEL</button>
+            <button class="clear" onclick="clearDisplay()">AC</button>
+
+            <button class="num" onclick="append('7')">7</button>
+            <button class="num" onclick="append('8')">8</button>
+            <button class="num" onclick="append('9')">9</button>
+            <button class="operator" onclick="append('/')">÷</button>
+            <button class="sci" onclick="sciOp('pct')">%</button>
+
+            <button class="num" onclick="append('4')">4</button>
+            <button class="num" onclick="append('5')">5</button>
+            <button class="num" onclick="append('6')">6</button>
+            <button class="operator" onclick="append('*')">×</button>
+            <button class="sci" onclick="sciOp('abs')">Abs</button>
+
+            <button class="num" onclick="append('1')">1</button>
+            <button class="num" onclick="append('2')">2</button>
+            <button class="num" onclick="append('3')">3</button>
+            <button class="operator" onclick="append('-')">-</button>
+            <button class="equal" onclick="calculate()">=</button>
+
+            <button class="num" onclick="append('0')">0</button>
+            <button class="num" onclick="append('.')">.</button>
+            <button class="num" onclick="append('00')">00</button>
+            <button class="operator" onclick="append('+')">+</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        function append(val) {
+            display.value += val;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        function deleteLast() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        // معالجة الدوال العلمية المعقدة
+        function sciOp(type) {
+            let currentVal = display.value;
+            
+            if(currentVal === "") currentVal = "0";
+
+            try {
+                // تقييم القيمة الحالية أولاً قبل تطبيق الدالة العلمية عليها
+                let evalVal = eval(currentVal); 
+
+                switch(type) {
+                    case 'sin':  display.value = Math.sin(evalVal * Math.PI / 180); break; // تحويل لدرجات
+                    case 'cos':  display.value = Math.cos(evalVal * Math.PI / 180); break;
+                    case 'tan':  display.value = Math.tan(evalVal * Math.PI / 180); break;
+                    case 'log':  display.value = Math.log10(evalVal); break;
+                    case 'ln':   display.value = Math.log(evalVal); break;
+                    case 'sqrt': display.value = Math.sqrt(evalVal); break;
+                    case 'abs':  display.value = Math.abs(evalVal); break;
+                    case 'pct':  display.value = evalVal / 100; break;
+                    case 'fact': display.value = factorial(evalVal); break;
+                }
+            } catch {
+                display.value = "Error";
+            }
+        }
+
+        // دالة حساب المضروب (العاملي) n!
+        function factorial(n) {
+            if (n < 0) return "Error";
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = n; i > 1; i--) {
+                result *= i;
+            }
+            return result;
+        }
+
+        // حساب المعادلة بالكامل
+        function calculate() {
+            try {
+                if (display.value !== "") {
+                    // تنفيذ المعادلة الرياضية المكتوبة
+                    let result = eval(display.value);
+                    display.value = result;
+                }
+            } catch (error) {
+                display.value = "Syntax ERROR";
+            }
+        }
+    </script>
+
+</body>
+</html>
